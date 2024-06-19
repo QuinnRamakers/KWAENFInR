@@ -1,0 +1,127 @@
+r=0.02
+theta=0.1^2
+lambda=2
+sigma=0.1
+rho=-0.5
+S0=100
+x0=log(100)
+V0=0.1^2
+T=10
+strikes<-c(seq(50,300,10))
+alphas<-c(seq(1.1,20,0.1))
+charfunc<-function(rho,sigma,lambda,T,r,theta,V0,x0,xi){
+  d=sqrt((1i*rho*sigma*xi-lambda)^2+xi*(1i+xi)*sigma^2)
+  C=(xi*(1i+xi)*(1-exp(d*T)))/((1i*rho*sigma*xi-lambda)*(1-exp(d*T))+d*(1+exp(d*T)))
+  A=1i*xi*r*T+(lambda*theta/sigma^2)*((d-(1i*rho*sigma*xi-lambda))*T-2*log(((1i*rho*sigma*xi-lambda)*(1-exp(d*T))+d*(1+exp(d*T)))/(2*d)))
+  ABC=A+C*V0+1i*xi*x0
+  return(exp(ABC))
+  }
+
+
+ftcall<-function(xi,alpha,k){
+  return(-(exp((1i*xi+1-alpha)*k))/(1i*xi+1-alpha)+exp((1i*xi-alpha+1)*k)/(1i*xi-alpha))
+}
+
+func<-function(xi,alpha,k){
+  Re(exp(-r*T)/(2*pi)*ftcall(xi,alpha,k)*charfunc(rho,sigma,lambda,T,r,theta,V0,x0,-(xi+1i*alpha)))
+}
+
+
+price<-function(K,alpha){
+  return(integrate(func,-10^(2.5),10^2.5,alpha=alpha,k=log(K)))
+}
+
+best_alphas<- as.matrix(cbind(strikes,lapply(strikes,function(x)alphas[which.min(func(0,alphas,log(x)))])))
+colnames(best_alphas)<-c('strike','alpha')
+best_alphas
+lm(as.numeric(best_alphas[,2])~as.numeric(best_alphas[,1]))
+plot(y=as.numeric(best_alphas[,2]),x=as.numeric(best_alphas[,1]),type='l',xlab='Strike',ylab='Best Alpha',main='Alpha that minimises the function at x=0 versus strike')
+abline(lm(as.numeric(best_alphas[,2])~as.numeric(best_alphas[,1])),col='red')
+legend('bottomright',legend=c('Calculated minimising alphas','Fitted Linear model'),
+       col=c('black','red'),lty=1)
+ftprices=c()
+for(i in 1:length(strikes)){
+  ftprices=append(ftprices,price(strikes[i],as.numeric(best_alphas[i,2]))$value)
+}
+
+
+
+
+#monte carlooooooo
+
+
+pathmaker<-function(rho,sigma,lambda,T,r,theta,V0,x0,n_steps,paths){
+  dt=T/n_steps
+  x_price=matrix(0,nrow=paths,ncol=n_steps+1)
+  stocvol=matrix(0,nrow=paths,ncol=n_steps+1)
+  x_price[,1]=x0
+  stocvol[,1]=V0
+  Sigma_mat <- matrix(c(1, rho,
+                        rho, 1), 
+                      nrow = 2, ncol = 2, byrow = TRUE)
+  for(i in 2:(n_steps+1)){
+    Wt=mvtnorm::rmvnorm(paths, sigma = Sigma_mat)
+    x_price[,i]=x_price[,i-1]+(r-0.5*stocvol[,i-1])*dt+sqrt(stocvol[,i-1]*dt)*Wt[,1]
+    stocvol[,i]=stocvol[,i-1]+lambda*(theta-stocvol[,i-1])*dt+sigma*sqrt(stocvol[,i-1]*dt)*Wt[,2]
+    #set negative volatility to 0
+    stocvol[stocvol[,i]<0,i]=abs(stocvol[stocvol[,i]<0,i])
+  }
+  systemout=list(xt=x_price,VT=stocvol)
+  
+  return(systemout)
+}
+
+mc_pricing<-function(K,n_steps,paths){
+  MC=pathmaker(rho,sigma,lambda,T,r,theta,V0,x0,n_steps,paths)
+  x_maturity=((MC$xt[,n_steps+1]))
+  payoffs <- matrix(NA, nrow = paths, ncol = length(K))
+  for(i in K){
+    index=which(K==i)
+    payoffs[,index]=exp(-r*T)*pmax(exp(x_maturity)-i,0)
+  }
+  colnames(payoffs)<-paste("Strike of ", K)
+  price=apply(payoffs,MARGIN=2,mean)
+  SE=apply(payoffs,MARGIN=2,function(x)sd(x)/sqrt(paths))
+    return(list(Price=price,SE=SE))
+}
+
+
+#implied vol
+
+BScall <- function(s0, K, r, T, sigma) {
+  d1 <- (log(s0/K) + (r + sigma^2/2)*T) / (sigma*sqrt(T))
+  d2 <- d1 - sigma*sqrt(T)
+  s0*pnorm(d1) - K*exp(-r*T)*pnorm(d2)
+  
+}
+impl_vol <- function(s0, K, r, T, price) {
+  root_fun <- function(sigma){
+    BScall(s0, K, r, T, sigma) - price
+  }
+  
+  uniroot(root_fun, c(0, 1),extendInt ="yes")$root
+}
+
+
+
+ftprices=c()
+for(i in 1:length(strikes)){
+  ftprices=append(ftprices,price(strikes[i],as.numeric(best_alphas[i,2]))$value)
+}
+mcprice=mc_pricing(strikes,250,5000)
+(abs(ftprices-mcprice$Price))-1.96*mcprice$SE<0
+test<-matrix(NA,length(mcprice$Price),4)
+up=(mcprice$Price+1.96*mcprice$SE)
+down=(mcprice$Price-1.96*mcprice$SE)
+for(i in 1:length(mcprice$Price)){
+  test[i,1]=impl_vol(S0,strikes[i],r,T,up[i])
+  test[i,2]=impl_vol(S0,strikes[i],r,T,mcprice$Price[i])
+  test[i,3]=impl_vol(S0,strikes[i],r,T,down[i])
+  test[i,4]=impl_vol(S0,strikes[i],r,T,ftprices[i])
+}
+plot(test[,2],type='l',x=strikes,xlab='Strike',ylab='Implie volatility',main='Implied volatilities')
+lines(test[,1],x=strikes,col='red')
+lines(test[,3],x=strikes,col='blue')
+legend('topright',legend=c('MC mean','95% CI upper bound MC','95% CI lower bound MC'),
+       col=c('black','red','blue','orange'),lty=1)
+

@@ -1,0 +1,4 @@
+useDynLib(KWAENFInR, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
+importFrom(RcppParallel,RcppParallelLibs)

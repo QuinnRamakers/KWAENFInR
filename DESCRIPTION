@@ -10,3 +10,7 @@ License: GPL (>= 3)
 Imports: Rcpp (>= 1.0.12), RcppParallel (>= 5.1.7), foreach(>= 1.5.2),doParallel(>= 1.0.17)
 LinkingTo: Rcpp, RcppParallel
 SystemRequirements: GNU make
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+RoxygenNote: 7.3.1

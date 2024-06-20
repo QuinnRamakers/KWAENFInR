@@ -19,24 +19,7 @@ dfi_calc<-function(ft,dT,N,tdrift,sigma,t){
   (ft+tdrift*sigma+sigma*rnorm(1))
 }
 
-#' Title
-#' @description
-#' This function simulates LIBOR market rate models and returns an object with 
-#' the matrixes for multiple simulations to be used for pricing of desired derivative.
-#' @details
-#' We implement the LIBOR market rate model based on martingale pricing and compensate 
-#' using the Radon-Nikodyn derivative to add a drift terms as found in the drift matrix. 
-#' This method always simulates untill the highest maturity is reached.
-#' 
-#' @param forwardrates Vector of forward rates with the same frequency. 
-#'
-#' @param dT Timesteps where 1 is equal to a year. This should be equal to the time between forward rates. 
-#' @param sigma Volatility matrix, in case of constant volatility provide a matrix with only a singular value for all indexes. 
-#'
-#' @return Object of class LIBORmc containing all matrixes simulated. 
-#' @export
-#'
-#' @examples
+
 LIBORSIM<- function(forwardrates,dT,sigma){
   #set matrices
   N=length(forwardrates)
@@ -60,6 +43,23 @@ LIBORSIM<- function(forwardrates,dT,sigma){
 }
 
 
+#' Title
+#'@description
+#' This function simulates LIBOR market rate models and returns an object with 
+#' the matrixes for multiple simulations to be used for pricing of desired derivative.
+#' @details
+#'We implement the LIBOR market rate model based on martingale pricing and compensate 
+#' using the Radon-Nikodyn derivative to add a drift terms as found in the drift matrix. 
+#' This method always simulates untill the highest maturity is reached.
+#' @param forwardrates Vector of forward rates with the same frequency. 
+#' @param dT Timesteps where 1 is equal to a year. This should be equal to the time between forward rates.
+#' @param sigma Volatility matrix, in case of constant volatility provide a matrix with only a singular value for all indexes. 
+#' @param n Number of simulations 
+#'
+#' @return Object of class LIBORmc containing all matrixes simulated. 
+#' @export
+#'
+#' 
 mcLIBOR<-function(forwardrates,dT,sigma,n){
 
  

@@ -7,8 +7,11 @@ Author: Quinn Ramakers
 Maintainer: Quinn Ramakers <q.ramakers@student.maastrichtuniversity.nl>
 Description: This package provides an efficient implementation of numerical methods used in financial option pricing. Specifically the Heston model for pricing stock options and LIBOR market model for interest rate derivatives. 
 License: GPL (>= 3)
-Imports: Rcpp (>= 1.0.12), RcppParallel (>= 5.1.7), foreach(>= 1.5.2),doParallel(>= 1.0.17)
-LinkingTo: Rcpp, RcppParallel
+Imports: Rcpp (>= 1.0.12), RcppParallel (>= 5.1.7), foreach(>= 1.5.2),doParallel(>= 1.0.17),mvtnorm(>= 1.2-5), ggplot2(>= 3.5.1), stats
+LinkingTo: 
+    Rcpp,
+    RcppArmadillo,
+    RcppParallel
 SystemRequirements: GNU make
 Suggests: 
     testthat (>= 3.0.0)

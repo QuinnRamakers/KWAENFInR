@@ -1,45 +1,25 @@
 [
     {
-        "file": "C:/Users/user/Documents/KWAENFInR/src/vector-sum.cpp",
-        "file_last_write": 1718708967.0,
+        "file": "C:/Users/user/Documents/KWAENFInR/src/Binomialtree.cpp",
+        "file_last_write": 1718955484.0,
         "definitions": [
             {
-                "usr": "c:@S@Sum",
-                "kind": 3,
-                "parent_name": "",
-                "name": "Sum",
-                "file": "C:/Users/user/Documents/KWAENFInR/src/vector-sum.cpp",
-                "line": 21,
-                "column": 8,
-                "hidden": false
-            },
-            {
-                "usr": "c:@S@Sum@F@operator()#k#k#",
-                "kind": 7,
-                "parent_name": "Sum",
-                "name": "operator(std::size_t, std::size_t)",
-                "file": "C:/Users/user/Documents/KWAENFInR/src/vector-sum.cpp",
-                "line": 34,
-                "column": 9,
-                "hidden": false
-            },
-            {
-                "usr": "c:@S@Sum@F@join#&1$@S@Sum#",
-                "kind": 7,
-                "parent_name": "Sum",
-                "name": "join(const Sum &)",
-                "file": "C:/Users/user/Documents/KWAENFInR/src/vector-sum.cpp",
-                "line": 39,
-                "column": 9,
-                "hidden": false
-            },
-            {
-                "usr": "c:@F@parallelVectorSum#$@N@Rcpp@S@Vector>#VI14#@N@Rcpp@ST>1#T@PreserveStorage#",
+                "usr": "c:@F@B_backward_induction#&1$@N@arma@S@Col>#d#d#",
                 "kind": 6,
                 "parent_name": "",
-                "name": "parallelVectorSum(Rcpp::NumericVector)",
-                "file": "C:/Users/user/Documents/KWAENFInR/src/vector-sum.cpp",
-                "line": 45,
+                "name": "B_backward_induction(const arma::vec &, double)",
+                "file": "C:/Users/user/Documents/KWAENFInR/src/Binomialtree.cpp",
+                "line": 8,
+                "column": 11,
+                "hidden": false
+            },
+            {
+                "usr": "c:@F@B_numeraire_Call#I#d#d#d#d#d#",
+                "kind": 6,
+                "parent_name": "",
+                "name": "B_numeraire_Call(int, double, double, double, double, double)",
+                "file": "C:/Users/user/Documents/KWAENFInR/src/Binomialtree.cpp",
+                "line": 19,
                 "column": 8,
                 "hidden": false
             }

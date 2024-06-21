@@ -3,32 +3,16 @@
 \alias{KWAENFInR}
 \docType{package}
 \title{
-  A short title line describing what the package does
+  Efficient implementations of mathematical finance models 
 }
 \description{
-  A more detailed description of what the package does. A length
-  of about one to five lines is recommended.
+ This package provides an efficient implementation of numerical methods used in financial option pricing. Specifically the Heston model for pricing stock options and LIBOR market model for interest rate derivatives. 
 }
-\details{
-  This section should provide a more detailed overview of how to use the
-  package, including the most important functions.
-}
-\author{
-Your Name, email optional.
 
-Maintainer: Your Name <your@email.com>
+\author{
+Quinn Ramakers.
+
+Maintainer: Quinn Ramakers <q.ramakers@student.maastrichtuniversity.nl>
 }
-\references{
-  This optional section can contain literature or other references for
-  background information.
-}
-\keyword{ package }
-\seealso{
-  Optional links to other man pages
-}
-\examples{
-  \dontrun{
-     ## Optional simple examples of the most important functions
-     ## These can be in \dontrun{} and \donttest{} blocks.   
-  }
-}
+
+

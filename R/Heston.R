@@ -16,8 +16,11 @@
 #'
 #' @return HestonMc object where every row is a simulation and every column a timestep
 #' @export
-#'
 #' @examples
+#'  HESTON(rho=-0.5, sigma=0.1, lambda=2, t=10, r=0.02, 
+#'  theta=0.1^2, V0=0.1^2, x0=log(100), n_steps=5, paths=10)
+#' 
+
 HESTON<-function(rho,sigma,lambda,t,r,theta,V0,x0,n_steps,paths){
   dt=t/n_steps
   x_price=matrix(0,nrow=paths,ncol=n_steps+1)
@@ -39,29 +42,49 @@ HESTON<-function(rho,sigma,lambda,t,r,theta,V0,x0,n_steps,paths){
   return(systemout)
 }
 
+#' Title
+#' @description
+#' HESTON_mc constructor
+#' 
+#' @param prices List of price paths
+#' @param volatility List of volatility
+#'
+#' @return Returns HESTON_mc object
+#' @export
+#'
+#' 
 HESTON_mc <- function(prices,volatility) {
   obj <- list(prices = prices,volatility=volatility )
   class(obj) <- "Heston_mc"
   return(obj)
 }
-plot.Heston_mc<-function(x, ...){
+#' Title
+#' @description plot of Heston model
+#' @param x Heston_mc object
+#' 
+#'
+#' @return plot of the model
+#' @export
+#'
+#' 
+plot.Heston_mc<-function(x){
   mean_prices_df <- data.frame(Time = 0:(ncol(x$prices) - 1), value = colMeans(x$prices), Path = "Mean")
   mean_volatility_df <- data.frame(Time = 0:(ncol(x$volatility) - 1), value = colMeans(x$volatility), Path = "Mean")
   mean_prices_df$Type <- "Price"
   mean_volatility_df$Type <- "Volatility"
   combined_df <- rbind(mean_prices_df, mean_volatility_df)
-  return(ggplot(combined_df, aes(x = Time, y = value, group = Path, color = Type)) +
-    geom_line(size = 1.5) +
-    labs(
+  return(ggplot2::ggplot(combined_df, ggplot2::aes(x = Time, y = value, group = Path, color = Type)) +
+           ggplot2::geom_line(size = 1.5) +
+           ggplot2::labs(
       title = "Development of Mean Price and Volatility",
       subtitle = "Simulated Mean Price and Volatility Paths Over Time",
       x = "Timestep",
       y = "Value"
     ) +
-    facet_wrap(vars(Type),scales = 'free_y')
+      ggplot2::facet_wrap(vars(Type),scales = 'free_y')
   +
-    theme_minimal(base_size = 15) +
-    theme(
+    ggplot2::theme_minimal(base_size = 15) +
+    ggplot2::theme(
       plot.title = element_text(hjust = 0.5, face = "bold"),
       plot.subtitle = element_text(hjust = 0.5),
       axis.title.x = element_text(face = "bold"),

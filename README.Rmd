@@ -18,7 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of KWAENFInR is to provide functions that simulate financial models which can be used to price derivatives.  
+The goal of KWAENFInR is to provide functions that simulate financial models which can be used to price derivatives. It currently provides a heston model monte carlo, a parallelised LIBOR market model 
+and a RCPP implementation of the binomial tree pricing methods.   
 
 ## Installation
 
